@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const API_KEY = "fa67934bfb70ec2f4d082cdf0cb06e87"; // Replace with your API Key
-const CITY = "Varanasi"; // Replace with your city
+const CITY = "VARANASI"; // Replace with your city
 const URL = `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`;
 
 // Ensure the 'assets' folder exists
@@ -46,11 +46,17 @@ function getWeatherIcon(condition) {
 }
 
 async function generateImage(temp, condition, icon) {
-  const canvas = createCanvas(500, 300);
+  const size = 300; // Circular canvas size
+  const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
 
+  // **Create Circular Clipping Mask**
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  ctx.clip();
+
   // **🌈 Gradient Background Based on Condition**
-  const gradient = ctx.createLinearGradient(0, 0, 500, 300);
+  const gradient = ctx.createLinearGradient(0, 0, size, size);
   if (condition.includes("Clear")) {
     gradient.addColorStop(0, "#ff9a9e");
     gradient.addColorStop(1, "#fad0c4");
@@ -66,18 +72,18 @@ async function generateImage(temp, condition, icon) {
   }
 
   ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 500, 300);
+  ctx.fillRect(0, 0, size, size);
 
   // **🌟 Styling for Text**
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 28px Arial";
+  ctx.font = "bold 26px Arial";
   ctx.textAlign = "center";
 
-  ctx.fillText(`🌍 Weather in ${CITY}`, 250, 50);
-  ctx.font = "bold 60px Arial";
-  ctx.fillText(`${icon} ${temp}`, 250, 140);
-  ctx.font = "30px Arial";
-  ctx.fillText(`Condition: ${condition}`, 250, 200);
+  ctx.fillText(`🌍 ${CITY}`, size / 2, size / 4);
+  ctx.font = "bold 50px Arial";
+  ctx.fillText(`${icon} ${temp}`, size / 2, size / 2);
+  ctx.font = "20px Arial";
+  ctx.fillText(`Condition: ${condition}`, size / 2, size - 50);
 
   // **📍 Save Image**
   const imagePath = path.join(assetsDir, "weather.png");
