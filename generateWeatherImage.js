@@ -1,10 +1,17 @@
 const axios = require("axios");
-const { createCanvas, loadImage } = require("canvas");
+const { createCanvas } = require("canvas");
 const fs = require("fs");
+const path = require("path");
 
 const API_KEY = "fa67934bfb70ec2f4d082cdf0cb06e87"; // Replace with your API Key
 const CITY = "Varanasi"; // Replace with your city
 const URL = `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`;
+
+// Ensure the 'assets' folder exists
+const assetsDir = path.join(__dirname, "assets");
+if (!fs.existsSync(assetsDir)) {
+  fs.mkdirSync(assetsDir, { recursive: true });
+}
 
 async function fetchWeather() {
   try {
@@ -35,9 +42,10 @@ async function generateImage(temp, condition) {
   ctx.fillText(`🌡 ${temp}`, 50, 100);
   ctx.fillText(`☁ ${condition}`, 50, 150);
 
+  const imagePath = path.join(assetsDir, "weather.png");
   const buffer = canvas.toBuffer("image/png");
-  fs.writeFileSync("weather.png", buffer);
-  console.log("Weather image updated!");
+  fs.writeFileSync(imagePath, buffer);
+  console.log(`Weather image updated at: ${imagePath}`);
 }
 
 fetchWeather();
