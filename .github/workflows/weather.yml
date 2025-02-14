@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Run Weather Script
-        run: node scripts/generateWeatherImage.js
+        run: node generateWeatherImage.js
 
       - name: Commit and Push Changes
         run: |
